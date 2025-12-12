@@ -13,6 +13,7 @@ Este proyecto es una presentación interactiva tipo "deck" diseñada para presen
 ## Configuración de Privacidad y Assets
 - **No-Index:** Implementación de meta tags `noindex` y archivo `robots.txt` para evitar rastreo público.
 - **Favicon:** Sistema completo de iconos generado dinámicamente para soporte multiplataforma.
+- **Mobile Gatekeeper:** Sistema de restricción estricta que bloquea el acceso en dispositivos móviles y tablets para garantizar la experiencia de usuario diseñada para escritorio.
 
 ## Estructura del Contenido
 La presentación consta de 5 secciones principales:

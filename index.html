@@ -449,10 +449,102 @@
         .card-pulse {
             animation: cardPulse 1.6s ease-in-out infinite;
         }
+
+        /* MOBILE BLOCKER OVERLAY */
+        #mobile-blocker {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            /* Highest priority */
+            background-color: rgba(5, 11, 20, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #mobile-blocker.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* PAUSE EVERYTHING STATE */
+        body.frozen-state * {
+            animation-play-state: paused !important;
+            transition: none !important;
+        }
+
+        /* === MOBILE LOCKDOWN MODE === */
+        body.mobile-locked {
+            overflow: hidden !important;
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overscroll-behavior: none;
+        }
+
+        /* Evita cualquier desplazamiento residual */
+        body.mobile-locked * {
+            overscroll-behavior: none;
+        }
+
+        /* Mobile blocker SIEMPRE full screen, sin scroll interno */
+        #mobile-blocker {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Desactiva completamente el deck y fondos */
+        body.mobile-locked #deck-container,
+        body.mobile-locked .orb,
+        body.mobile-locked nav,
+        body.mobile-locked main {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body class="font-sans antialiased text-gray-200 bg-alana-dark selection:bg-alana-gold selection:text-alana-dark">
+
+    <!-- MOBILE / TABLET BLOCKER -->
+    <div id="mobile-blocker">
+        <div class="max-w-md w-full space-y-8 relative z-10">
+            <!-- Icono Desktop -->
+            <div
+                class="w-20 h-20 mx-auto rounded-full bg-alana-gold/10 flex items-center justify-center border border-alana-gold/20 shadow-[0_0_30px_rgba(238,191,100,0.1)]">
+                <i data-lucide="monitor" class="w-8 h-8 text-alana-gold"></i>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-3xl font-serif text-white">Experiencia optimizada para escritorio</h2>
+                <div class="h-[1px] w-12 bg-alana-gold mx-auto"></div>
+                <p class="text-gray-300 font-light leading-relaxed">
+                    Esta presentación ha sido diseñada exclusivamente para ser navegada desde un computador de
+                    escritorio.
+                </p>
+                <p class="text-gray-400 text-sm">
+                    Para disfrutar correctamente la experiencia, por favor ábrela desde un dispositivo desktop.
+                </p>
+            </div>
+        </div>
+
+        <!-- Background Elements inside blocker -->
+        <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-alana-primary/10 rounded-full blur-[80px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-alana-gold/5 rounded-full blur-[80px]"></div>
+        </div>
+    </div>
 
     <!-- Fondo Ambiental -->
     <div class="fixed inset-0 pointer-events-none z-0 bg-premium-gradient"></div>
@@ -1360,6 +1452,46 @@
     <script>
         // Inicializar Iconos
         lucide.createIcons();
+
+
+        // --- MOBILE BLOCKER LOGIC ---
+        function checkDeviceAndBlock() {
+            const width = window.innerWidth;
+            const ua = navigator.userAgent.toLowerCase();
+            // Expanded mobile regex
+            const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet/i.test(ua);
+            // Strict desktop breakpoint - User requested < 1024px
+            const isSmallScreen = width < 1024;
+
+            const blocker = document.getElementById('mobile-blocker');
+
+            if (isMobile || isSmallScreen) {
+                // ACTIVATE BLOCK
+                if (blocker && !blocker.classList.contains('visible')) {
+                    blocker.classList.add('visible');
+                    document.body.classList.add('frozen-state', 'mobile-locked');
+
+                    // Stop Logic
+                    if (typeof stopAllAudio === 'function') stopAllAudio();
+                    if (typeof pauseCurrentAudio === 'function') pauseCurrentAudio();
+
+                    // Extra safety: Force pause on any media element found
+                    document.querySelectorAll('audio, video').forEach(el => el.pause());
+                }
+            } else {
+                // DEACTIVATE BLOCK
+                if (blocker && blocker.classList.contains('visible')) {
+                    blocker.classList.remove('visible');
+                    document.body.classList.remove('frozen-state', 'mobile-locked');
+                }
+            }
+        }
+
+        // Immediate check - Deferred to avoid TDZ on currentAudio
+        setTimeout(checkDeviceAndBlock, 0);
+        window.addEventListener('resize', checkDeviceAndBlock);
+        window.addEventListener('load', checkDeviceAndBlock);
+        // --- END MOBILE BLOCKER LOGIC ---
 
         // Estado Global
         let currentSlide = 0;
