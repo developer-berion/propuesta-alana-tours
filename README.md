@@ -8,6 +8,11 @@ Este proyecto es una presentación interactiva tipo "deck" diseñada para presen
 - **Tailwind CSS (CDN):** Framework de utilidades para el diseño visual, incluyendo configuraciones personalizadas para la paleta de colores de la marca.
 - **Lucide Icons:** Iconografía moderna y escalable.
 - **JavaScript (Vanilla):** Lógica para la navegación entre diapositivas, animaciones de entrada y gráficos dinámicos.
+- **Python (Pillow):** Scrip de utilidad (`generate_favicons.py`) para generación de assets.
+
+## Configuración de Privacidad y Assets
+- **No-Index:** Implementación de meta tags `noindex` y archivo `robots.txt` para evitar rastreo público.
+- **Favicon:** Sistema completo de iconos generado dinámicamente para soporte multiplataforma.
 
 ## Estructura del Contenido
 La presentación consta de 5 secciones principales:
