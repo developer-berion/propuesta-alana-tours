@@ -1,0 +1,1901 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alana Tours | Estrategia Comercial B2B</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts: Inter (Modern Sans) and Playfair Display (Premium Serif headings) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        alana: {
+                            primary: '#006AB3',   // Azul Principal
+                            secondary: '#2BA4D8', // Azul Secundario
+                            gold: '#EEBF64',      // Dorado Acento
+                            dark: '#050B14',      // Fondo Premium Dark
+                            panel: '#0B1624'      // Paneles/Tarjetas
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'premium-gradient': 'radial-gradient(circle at 15% 50%, rgba(0, 106, 179, 0.12) 0%, rgba(5, 11, 20, 1) 60%)',
+                        'card-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%)'
+                    },
+                    letterSpacing: {
+                        'widest-xl': '.25em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Reset Base y Ocultar Scrollbar */
+        body {
+            background-color: #050B14;
+            color: #ffffff;
+            overflow: hidden;
+            /* Efecto presentación */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Contenedor del Deck */
+        #deck-container {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Movimiento cinemático */
+            height: 100%;
+            width: 100%;
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 4rem;
+            position: relative;
+            opacity: 0.3;
+            transition: opacity 0.8s ease;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* Animaciones de Texto Escalonadas */
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .active .reveal-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animación de Gráficos (Barras creciendo) */
+        .bar-growth {
+            height: 0;
+            transition: height 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .active .bar-growth.h-10 {
+            height: 10%;
+        }
+
+        .active .bar-growth.h-20 {
+            height: 20%;
+        }
+
+        .active .bar-growth.h-30 {
+            height: 30%;
+        }
+
+        .active .bar-growth.h-40 {
+            height: 40%;
+        }
+
+        .active .bar-growth.h-50 {
+            height: 50%;
+        }
+
+        .active .bar-growth.h-60 {
+            height: 60%;
+        }
+
+        .active .bar-growth.h-80 {
+            height: 80%;
+        }
+
+        .active .bar-growth.h-full {
+            height: 100%;
+        }
+
+        /* Animación de Línea SVG */
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 2s ease-out;
+        }
+
+        .active .chart-line {
+            stroke-dashoffset: 0;
+            transition-delay: 0.5s;
+        }
+
+        /* Delays para efecto cascada */
+        .active .d-1 {
+            transition-delay: 0.1s;
+        }
+
+        .active .d-2 {
+            transition-delay: 0.3s;
+        }
+
+        .active .d-3 {
+            transition-delay: 0.5s;
+        }
+
+        .active .d-4 {
+            transition-delay: 0.7s;
+        }
+
+        .active .d-5 {
+            transition-delay: 0.9s;
+        }
+
+        /* Elementos Ambientales de Fondo */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(11, 22, 36, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Onboarding Modal Styles */
+        #onboarding-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #onboarding-modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(5, 11, 20, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            max-width: 1000px;
+            max-height: 700px;
+            background: rgba(11, 22, 36, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.5s ease;
+        }
+
+        #onboarding-modal.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-slider {
+            flex: 1;
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+
+        .modal-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Mobile first */
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            padding: 2rem;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .modal-slide {
+                flex-direction: row;
+                gap: 3rem;
+                padding: 4rem;
+                text-align: left;
+            }
+
+            .modal-slide-content {
+                width: 40%;
+            }
+
+            .modal-slide-image {
+                width: 60%;
+            }
+        }
+
+        .modal-slide-content {
+            z-index: 10;
+        }
+
+        .modal-slide-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-slide-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-controls {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4rem;
+            box-sizing: border-box;
+            z-index: 20;
+        }
+
+        .modal-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-dot.active {
+            background-color: #EEBF64;
+            transform: scale(1.2);
+        }
+
+        .modal-nav-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .modal-nav-btn:hover {
+            opacity: 1;
+        }
+
+        .btn-gold {
+            background-color: transparent;
+            border: 1px solid #EEBF64;
+            color: #EEBF64;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-gold:hover {
+            background-color: #EEBF64;
+            color: #0B1624;
+            box-shadow: 0 0 15px rgba(238, 191, 100, 0.3);
+        }
+
+        /* SPOTLIGHT SYSTEM - Transparent Focus Hole */
+        #spotlight-overlay {
+            position: fixed;
+            z-index: 40;
+            /* Below target (41) */
+            pointer-events: none;
+            opacity: 0;
+
+            /* Visual Box Stats */
+            border-radius: 22px;
+            /* User requested 24-32px */
+            background: transparent;
+            /* KEY: No dimming inside the box */
+            border: 1px solid #EEBF64;
+
+            /* Infinite Overlay Shadow Scheme */
+            /* 1. The big dark overlay (0.65 opacity) */
+            /* 2. A subtle shadow for the box itself */
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65), 0 0 15px rgba(0, 0, 0, 0.3);
+
+            /* Smooth Transitions */
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease-out;
+
+            /* Initialize off-screen or 0 size */
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+        }
+
+
+
+        /* Spotlight Zoom Effect */
+        .spotlight-zoomed {
+            transform: scale(1.03);
+            transition: transform 0.4s ease-out;
+            position: relative;
+            z-index: 41;
+            /* Lift above overlay just in case, though clip-path handles visibility */
+            /* Note: z-index on transformed element creates stacking context */
+        }
+
+        /* Punto GLOW SUAVE (para barras o markers del gráfico) */
+        @keyframes glowPulse {
+            0% {
+                filter: drop-shadow(0 0 0px #EEBF64);
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 20px #EEBF64);
+                /* Increased from 8px to 20px */
+                transform: scale(1.05);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 0px #EEBF64);
+                transform: scale(1);
+            }
+        }
+
+        .glow-pulse {
+            animation: glowPulse 1.4s ease-in-out infinite;
+        }
+
+        /* Pulso para tarjetas de ROI */
+        @keyframes cardPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(238, 191, 100, 0.0);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 15px rgba(238, 191, 100, 0.25);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(238, 191, 100, 0);
+            }
+        }
+
+        .card-pulse {
+            animation: cardPulse 1.6s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased text-gray-200 bg-alana-dark selection:bg-alana-gold selection:text-alana-dark">
+
+    <!-- Fondo Ambiental -->
+    <div class="fixed inset-0 pointer-events-none z-0 bg-premium-gradient"></div>
+    <div class="orb w-[600px] h-[600px] bg-alana-primary top-[-20%] left-[-10%] opacity-20"></div>
+    <div class="orb w-[500px] h-[500px] bg-alana-gold bottom-[-20%] right-[-10%] opacity-10"></div>
+
+    <!-- Global Spotlight Overlay -->
+    <div id="spotlight-overlay"></div>
+
+    <!-- Header / Branding -->
+    <nav
+        class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-6 md:px-12 mix-blend-plus-lighter">
+        <div class="flex items-center gap-4">
+            <!-- Logo Placeholder Alana -->
+            <!-- Logo Alana -->
+            <img src="logo.webp" alt="Alana Tours Logo" class="h-12 w-auto object-contain">
+        </div>
+        <div class="hidden md:flex flex-col items-end text-right">
+            <span class="text-[10px] uppercase tracking-widest text-gray-400">Informe Ejecutivo</span>
+            <span class="text-xs text-alana-gold font-medium tracking-wide border-b border-alana-gold/30 pb-1">Powered
+                by Berion Company</span>
+        </div>
+    </nav>
+
+
+    <!-- Viewport Principal -->
+    <main class="w-full h-full relative z-10">
+        <div id="deck-container">
+
+            <!-- SLIDE 1: INTRODUCCIÓN -->
+            <section class="slide active" id="slide-0">
+                <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                    <div class="md:col-span-8 space-y-8">
+                        <div class="reveal-text d-1 flex items-center gap-3">
+                            <span class="h-[1px] w-12 bg-alana-gold"></span>
+                            <span
+                                class="text-alana-secondary uppercase tracking-widest-xl text-sm font-semibold">Propuesta
+                                Formal</span>
+                        </div>
+                        <h1
+                            class="reveal-text d-2 text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-tight">
+                            Optimización Comercial <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-alana-gold to-yellow-200 italic pr-4">B2B
+                                Inteligente.</span>
+                        </h1>
+                        <div class="reveal-text d-3 pt-4 border-l-2 border-white/20 pl-6">
+                            <p class="text-xl text-gray-300 font-light max-w-2xl leading-relaxed">
+                                El reto no es construir la casa, es convertirla en un motor activo de ventas. Una
+                                estrategia para transformar el nuevo sitio web de Alana Tours en una plataforma de
+                                captación masiva.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Metadata Lateral -->
+                    <div
+                        class="md:col-span-4 flex flex-col justify-end items-start md:items-end reveal-text d-4 space-y-8 opacity-80">
+                        <div class="text-left md:text-right">
+                            <p class="text-xs text-alana-primary uppercase tracking-widest mb-1">Alcance</p>
+                            <p class="text-lg text-white font-serif">Colombia, Venezuela, USA</p>
+                        </div>
+                        <div class="text-left md:text-right">
+                            <p class="text-xs text-alana-primary uppercase tracking-widest mb-1">Objetivo</p>
+                            <p class="text-lg text-white font-serif">Captación & Distribución</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: DIAGNÓSTICO (PROBLEMA) -->
+            <section class="slide" id="slide-1">
+                <div class="max-w-7xl w-full h-full flex flex-col justify-center">
+                    <div class="reveal-text d-1 mb-12">
+                        <span
+                            class="text-alana-gold uppercase tracking-widest text-xs font-bold px-3 py-1 border border-alana-gold/30 rounded-full">Diagnóstico
+                            Estratégico</span>
+                        <h2 class="text-4xl md:text-5xl font-serif mt-6 text-white">Retos del Crecimiento Digital</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-text d-2">
+                        <!-- Card 1 -->
+                        <div class="glass-panel p-8 rounded-sm hover:bg-white/5 transition-colors group">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center mb-6 text-alana-gold group-hover:text-white transition-colors">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-xl text-white font-serif mb-3">Dependencia Tradicional</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">
+                                Los esfuerzos comerciales dependen excesivamente de WhatsApp y referidos. Esto limita la
+                                escalabilidad y la entrada constante de nuevas agencias fuera del círculo actual.
+                            </p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div
+                            class="glass-panel p-8 rounded-sm hover:bg-white/5 transition-colors group border-t-2 border-t-alana-primary">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center mb-6 text-alana-gold group-hover:text-white transition-colors">
+                                <i data-lucide="search-x" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-xl text-white font-serif mb-3">Visibilidad Limitada</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">
+                                Ausencia en búsquedas críticas B2B como "bloqueos mayorista Caribe" o "salidas grupales
+                                Japón". El sitio existe, pero no está captando tráfico orgánico de agencias nuevas.
+                            </p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="glass-panel p-8 rounded-sm hover:bg-white/5 transition-colors group">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center mb-6 text-alana-gold group-hover:text-white transition-colors">
+                                <i data-lucide="cpu" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-xl text-white font-serif mb-3">El Reto de la IA</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">
+                                Las nuevas generaciones de agentes consultan ChatGPT y Gemini. Alana Tours carece de la
+                                autoridad semántica para ser recomendada por estos nuevos motores de búsqueda.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: LA SOLUCIÓN (5 PILARES) -->
+            <section class="slide" id="slide-2">
+                <div class="max-w-7xl w-full">
+                    <div class="text-center mb-16 reveal-text d-1">
+                        <h2 class="text-4xl md:text-6xl font-serif text-white mb-4">La Propuesta Integral</h2>
+                        <p class="text-xl text-gray-400 font-light">Metodología Berion: Estrategia + Tecnología +
+                            Negocio</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 reveal-text d-2">
+                        <!-- Pilar 1 -->
+                        <div
+                            class="group relative h-80 bg-card-gradient border border-white/10 p-6 flex flex-col justify-between hover:border-alana-gold/50 transition-all duration-500">
+                            <div
+                                class="absolute inset-0 bg-alana-primary/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <span
+                                class="text-5xl font-serif text-white/10 font-bold absolute top-4 right-4 group-hover:text-alana-gold/20">01</span>
+                            <div class="relative z-10">
+                                <i data-lucide="bar-chart-2" class="text-alana-gold mb-4"></i>
+                                <h3 class="text-white font-bold mb-2">SEO Inteligente</h3>
+                                <p class="text-xs text-gray-400">Captación progresiva. De la estabilización técnica a la
+                                    autoridad internacional.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 2 -->
+                        <div
+                            class="group relative h-80 bg-card-gradient border border-white/10 p-6 flex flex-col justify-between hover:border-alana-gold/50 transition-all duration-500">
+                            <div
+                                class="absolute inset-0 bg-alana-primary/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <span
+                                class="text-5xl font-serif text-white/10 font-bold absolute top-4 right-4 group-hover:text-alana-gold/20">02</span>
+                            <div class="relative z-10">
+                                <i data-lucide="tag" class="text-alana-gold mb-4"></i>
+                                <h3 class="text-white font-bold mb-2">Promociones</h3>
+                                <p class="text-xs text-gray-400">Optimización de producto B2B. Maximizar alcance de las
+                                    promociones, por ejemplo,
+                                    "Luces de Japón" y paquetes clave.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 3 -->
+                        <div
+                            class="group relative h-80 bg-card-gradient border border-white/10 p-6 flex flex-col justify-between hover:border-alana-gold/50 transition-all duration-500">
+                            <div
+                                class="absolute inset-0 bg-alana-primary/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <span
+                                class="text-5xl font-serif text-white/10 font-bold absolute top-4 right-4 group-hover:text-alana-gold/20">03</span>
+                            <div class="relative z-10">
+                                <i data-lucide="book-open" class="text-alana-gold mb-4"></i>
+                                <h3 class="text-white font-bold mb-2">Contenido B2B</h3>
+                                <p class="text-xs text-gray-400">Guías de venta y educación para agencias. Generar
+                                    confianza y autoridad.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 4 -->
+                        <div
+                            class="group relative h-80 bg-card-gradient border border-white/10 p-6 flex flex-col justify-between hover:border-alana-gold/50 transition-all duration-500">
+                            <div
+                                class="absolute inset-0 bg-alana-primary/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <span
+                                class="text-5xl font-serif text-white/10 font-bold absolute top-4 right-4 group-hover:text-alana-gold/20">04</span>
+                            <div class="relative z-10">
+                                <i data-lucide="bot" class="text-alana-gold mb-4"></i> <!-- Gold icon for IA -->
+                                <h3 class="text-white font-bold mb-2">IA Ready</h3>
+                                <p class="text-xs text-gray-400">Estructura semántica para aparecer en ChatGPT, Copilot
+                                    y Perplexity.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pilar 5 -->
+                        <div
+                            class="group relative h-80 bg-card-gradient border border-white/10 p-6 flex flex-col justify-between hover:border-alana-gold/50 transition-all duration-500">
+                            <div
+                                class="absolute inset-0 bg-alana-primary/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <span
+                                class="text-5xl font-serif text-white/10 font-bold absolute top-4 right-4 group-hover:text-alana-gold/20">05</span>
+                            <div class="relative z-10">
+                                <i data-lucide="activity" class="text-alana-gold mb-4"></i>
+                                <h3 class="text-white font-bold mb-2">Inteligencia</h3>
+                                <p class="text-xs text-gray-400">Monitoreo mensual, ajustes por temporada y reportes
+                                    estratégicos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: HOJA DE RUTA (TIMELINE) -->
+            <section class="slide" id="slide-3">
+                <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-4 reveal-text d-1">
+                        <span class="text-alana-primary uppercase tracking-widest text-xs font-bold">Cronograma</span>
+                        <h2 class="text-4xl md:text-5xl font-serif mt-4 text-white mb-6">Hoja de Ruta de Crecimiento
+                        </h2>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            No es un servicio tradicional, es una alianza de crecimiento progresivo diseñada para
+                            generar impacto medible desde el primer trimestre.
+                        </p>
+                    </div>
+
+                    <div class="lg:col-span-8 reveal-text d-2">
+                        <div class="relative pl-8 border-l border-white/10 space-y-12">
+                            <!-- Phase 1 -->
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[39px] top-1 w-5 h-5 bg-alana-dark border-2 border-alana-secondary rounded-full">
+                                </div>
+                                <h4 class="text-alana-secondary font-bold text-lg mb-1">Día 1–30: Estabilización</h4>
+                                <p class="text-gray-300 text-sm">Auditoría profunda, corrección técnica crítica y
+                                    priorización de promociones clave (Europa, Asia, África, etc).</p>
+                            </div>
+
+                            <!-- Phase 2 -->
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[39px] top-1 w-5 h-5 bg-alana-gold rounded-full shadow-[0_0_15px_rgba(238,191,100,0.5)]">
+                                </div>
+                                <h4 class="text-alana-gold font-bold text-lg mb-1">Día 31–60: Visibilidad Comercial</h4>
+                                <p class="text-gray-300 text-sm">Optimización de promociones B2B, aceleración de
+                                    indexación e integración de contenido educativo para agencias.</p>
+                            </div>
+
+                            <!-- Phase 3 -->
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[39px] top-1 w-5 h-5 bg-alana-dark border-2 border-white rounded-full">
+                                </div>
+                                <h4 class="text-white font-bold text-lg mb-1">Día 61–90+: Expansión y Autoridad</h4>
+                                <p class="text-gray-300 text-sm">Aumento de tráfico cualificado, primeras posiciones en
+                                    keywords clave y captación real de agencias internacionales.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NUEVO SLIDE: PROYECCIÓN DE CRECIMIENTO (AÑADIDO) -->
+            <section class="slide" id="slide-growth">
+                <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+                    <!-- Columna Izquierda: Datos Clave -->
+                    <div class="lg:col-span-4 space-y-8 reveal-text d-1">
+                        <div>
+                            <span
+                                class="text-alana-gold uppercase tracking-widest text-xs font-bold border-b border-alana-gold pb-1">Análisis
+                                Financiero</span>
+                            <h2 class="text-4xl md:text-5xl font-serif mt-6 text-white leading-tight">Proyección de
+                                Valor</h2>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            El modelo de captación progresiva genera un efecto de interés compuesto. Una vez establecida
+                            la autoridad digital (Mes 3-4), el costo de adquisición baja mientras el ROI escala
+                            exponencialmente.
+                        </p>
+
+                        <div class="grid grid-cols-1 gap-6 pt-4">
+                            <div id="roi-card" class="flex items-start gap-4">
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <i data-lucide="trending-up" class="w-6 h-6 text-alana-gold"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-xl">3x <span
+                                            class="text-gray-500 font-light text-sm">a</span> 10x</h4>
+                                    <p class="text-xs text-alana-secondary uppercase tracking-widest mt-1">Multiplicador
+                                        de ROI</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <i data-lucide="users" class="w-6 h-6 text-alana-gold"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-white font-bold text-xl">Compuesto</h4>
+                                    <p class="text-xs text-alana-secondary uppercase tracking-widest mt-1">Crecimiento
+                                        Agencias</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Gráfico Personalizado (CSS/SVG) -->
+                    <div
+                        class="lg:col-span-8 bg-[#08101C] border border-white/5 rounded-xl p-8 relative overflow-hidden reveal-text d-3">
+                        <!-- Título del Gráfico -->
+                        <div class="flex justify-between items-center mb-8 relative z-10">
+                            <h3 class="text-white font-medium">Curva de Rentabilidad Progresiva</h3>
+                            <div class="flex gap-4">
+                                <div class="flex items-center gap-2"><span
+                                        class="w-2 h-2 rounded-full bg-alana-secondary"></span><span
+                                        class="text-[10px] text-gray-400 uppercase">Volumen Tráfico</span></div>
+                                <div class="flex items-center gap-2"><span
+                                        class="w-2 h-2 rounded-full bg-alana-gold"></span><span
+                                        class="text-[10px] text-gray-400 uppercase">ROI Neto</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Área del Gráfico -->
+                        <div
+                            class="relative h-64 w-full flex items-end gap-2 md:gap-6 px-4 pb-8 border-b border-white/10">
+
+                            <!-- Fondo de líneas -->
+                            <div
+                                class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20 pb-8">
+                                <div class="w-full h-[1px] bg-white border-t border-dashed border-white"></div>
+                                <div class="w-full h-[1px] bg-white border-t border-dashed border-white"></div>
+                                <div class="w-full h-[1px] bg-white border-t border-dashed border-white"></div>
+                                <div class="w-full h-[1px] bg-white border-t border-dashed border-white"></div>
+                            </div>
+
+                            <!-- Barras (Tráfico/Visibilidad) -->
+                            <div class="w-full flex justify-between items-end h-full z-0 relative ml-8">
+                                <!-- Mes 1 -->
+                                <div class="w-8 bg-alana-secondary/20 rounded-t-sm relative group bar-growth h-10">
+                                    <div
+                                        class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        M1</div>
+                                </div>
+                                <!-- Mes 2 -->
+                                <div class="w-8 bg-alana-secondary/25 rounded-t-sm relative group bar-growth h-20">
+                                </div>
+                                <!-- Mes 3 -->
+                                <div id="bar-mes3"
+                                    class="w-8 bg-alana-secondary/30 rounded-t-sm relative group bar-growth h-30">
+                                    <div
+                                        class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] text-white bg-alana-dark px-2 py-1 border border-white/10 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                        Captación Real</div>
+                                </div>
+                                <!-- Mes 4 -->
+                                <div id="bar-mes4"
+                                    class="w-8 bg-alana-secondary/40 rounded-t-sm relative group bar-growth h-40">
+                                </div>
+                                <!-- Mes 5 -->
+                                <div id="bar-mes5"
+                                    class="w-8 bg-alana-secondary/50 rounded-t-sm relative group bar-growth h-50">
+                                </div>
+                                <!-- Mes 6 -->
+                                <div id="bar-mes6"
+                                    class="w-8 bg-alana-secondary/60 rounded-t-sm relative group bar-growth h-60">
+                                    <div
+                                        class="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] text-white bg-alana-dark px-2 py-1 border border-white/10 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                        Consolidación</div>
+                                </div>
+                                <!-- Año 1 -->
+                                <div class="w-8 bg-alana-secondary/80 rounded-t-sm relative group bar-growth h-80">
+                                    <div
+                                        class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-alana-gold font-bold">
+                                        10x</div>
+                                </div>
+                            </div>
+
+                            <!-- Línea de Tendencia (ROI) SVG Overlay -->
+                            <svg class="absolute inset-0 h-full w-full overflow-visible pointer-events-none ml-8 pb-8"
+                                preserveAspectRatio="none">
+                                <path d="M 15,220 C 60,220 100,200 180,160 C 260,120 350,100 550,20" fill="none"
+                                    stroke="#EEBF64" stroke-width="3" stroke-linecap="round" class="chart-line" />
+                                <!-- Puntos Clave -->
+                                <circle cx="15" cy="220" r="4" fill="#050B14" stroke="#EEBF64" stroke-width="2"
+                                    class="reveal-text d-3" />
+                                <circle cx="180" cy="160" r="4" fill="#050B14" stroke="#EEBF64" stroke-width="2"
+                                    class="reveal-text d-4" />
+                                <circle cx="550" cy="20" r="4" fill="#EEBF64" stroke="#EEBF64" stroke-width="2"
+                                    class="reveal-text d-5" />
+                            </svg>
+
+                            <!-- Etiquetas Eje X -->
+                            <div
+                                class="absolute bottom-0 left-8 right-0 flex justify-between text-[10px] text-gray-500 uppercase tracking-widest pt-2">
+                                <span>Mes 1</span>
+                                <span>Mes 3</span>
+                                <span>Mes 6</span>
+                                <span>Año 1</span>
+                            </div>
+
+                            <!-- Etiqueta Eje Y -->
+                            <div
+                                class="absolute left-0 bottom-8 top-0 flex flex-col justify-between text-[10px] text-gray-600 font-mono h-[calc(100%-2rem)]">
+                                <span>High</span>
+                                <span>Med</span>
+                                <span>Low</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SLIDE 6: ESTRATEGIA SEO (NUEVO) -->
+            <section class="slide" id="slide-seo">
+                <div class="max-w-7xl w-full h-full flex flex-col justify-center">
+                    <!-- Header Slide -->
+                    <div class="reveal-text d-1 mb-10 border-b border-white/10 pb-6 flex justify-between items-end">
+                        <div>
+                            <span
+                                class="text-alana-gold uppercase tracking-widest text-xs font-bold mb-2 block">Estrategia
+                                Nº1</span>
+                            <h2 class="text-4xl md:text-5xl font-serif text-white">SEO Inteligente <span
+                                    class="text-gray-500 text-3xl italic font-light ml-3">para Potenciar
+                                    Captación</span></h2>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="bar-chart" class="w-12 h-12 text-alana-primary/20"></i>
+                        </div>
+                    </div>
+
+                    <!-- Grid de 5 Puntos -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 reveal-text d-2">
+
+                        <!-- Columna Izquierda (3 items) -->
+                        <div class="md:col-span-7 space-y-4">
+                            <!-- Item 1 -->
+                            <div id="seo-item-1"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="zap" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">1. Salud Técnica Automática 24/7</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">El sitio se optimiza solo:
+                                        metaetiquetas, encabezados, enlaces rotos e indexación inmediata.</p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: máxima visibilidad sin tareas manuales.</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div id="seo-item-2"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="search" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">2. Visibilidad en Google & Motores de
+                                        IA</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Arquitectura lista para posicionar
+                                        búsquedas B2B críticas (mayoristas, bloqueos, salidas grupales).</p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: más agencias descubren a Alana sin depender de pauta.</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div id="seo-item-3"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="globe" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">3. Autoridad Digital Internacional
+                                    </h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Backlinks, presencia en medios y
+                                        señales de marca que elevan la credibilidad.</p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: Google reconoce a Alana como proveedor líder.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha (2 items) -->
+                        <div class="md:col-span-5 space-y-4">
+                            <!-- Item 4 -->
+                            <div id="seo-item-4"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex flex-col justify-center h-[calc(50%-0.5rem)]">
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-alana-primary/10 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="text-white font-serif text-lg">4. Contenido Estratégico B2B</h3>
+                                </div>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-3">Mapas tópicos + guías para
+                                    agencias que construyen liderazgo de opinión.</p>
+                                <p class="text-xs text-alana-gold uppercase tracking-wider font-semibold">Resultado:
+                                    posicionamiento sostenido.</p>
+                            </div>
+
+                            <!-- Item 5 -->
+                            <div id="seo-item-5"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex flex-col justify-center h-[calc(50%-0.5rem)]">
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-alana-primary/10 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                        <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="text-white font-serif text-lg">5. Validación Local</h3>
+                                </div>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-3">Optimización de perfiles en
+                                    Bogotá, Caracas y Miami para reforzar confianza.</p>
+                                <p class="text-xs text-alana-gold uppercase tracking-wider font-semibold">Resultado:
+                                    conv. rápida.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: ESTRATEGIA CONTENIDO & REDES SOCIALES -->
+            <section class="slide" id="slide-social">
+                <div class="max-w-7xl w-full h-full flex flex-col justify-center">
+                    <!-- Header Slide -->
+                    <div class="reveal-text d-1 mb-10 border-b border-white/10 pb-6 flex justify-between items-end">
+                        <div>
+                            <span
+                                class="text-alana-gold uppercase tracking-widest text-xs font-bold mb-2 block">Estrategia
+                                Nº2</span>
+                            <h2 class="text-4xl md:text-5xl font-serif text-white">
+                                Contenido & Redes Sociales Integradas
+                                <span class="text-gray-500 text-2xl italic font-light block md:inline ml-2">
+                                    Instagram + Facebook + Sitio Web
+                                </span>
+                            </h2>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="share-2" class="w-12 h-12 text-alana-primary/20"></i>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Puntos Estratégicos -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 reveal-text d-2">
+
+                        <!-- Columna Izquierda (3 items principales) -->
+                        <div class="md:col-span-7 space-y-4">
+                            <!-- Item 1 -->
+                            <div id="slide7-option1"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">1. Contenido sincronizado con el
+                                        sitio web</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Cada promoción, destino o salida publicada en la web se transforma en contenido
+                                        para Instagram y Facebook: carruseles, reels y stories alineados al catálogo
+                                        real.
+                                    </p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: coherencia total entre producto y comunicación diaria.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div id="slide7-option2"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="briefcase" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">2. Narrativa comercial enfocada en
+                                        agencias</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Mensajes que hablan el lenguaje B2B: beneficios para la agencia, argumentos de
+                                        venta,
+                                        comisiones, cupos y diferenciadores frente a otros mayoristas.
+                                    </p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: redes sociales que venden, no solo que “postean”.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div id="slide7-option3"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex gap-5 items-start">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-alana-primary/10 flex-shrink-0 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-serif text-lg mb-1">3. Calendario editorial vinculado a
+                                        productos
+                                        clave</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Japón, Corea, Caribe, salidas grupales, bloqueos y cupos especiales organizados
+                                        en un
+                                        calendario mensual, alineado a temporadas, demanda y tendencias del mercado.
+                                    </p>
+                                    <p class="text-xs text-alana-gold mt-2 uppercase tracking-wider font-semibold">
+                                        Resultado: constancia, foco y menos improvisación.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha (2 bloques estratégicos) -->
+                        <div class="md:col-span-5 space-y-4">
+                            <!-- Item 4 -->
+                            <div id="slide7-option4"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex flex-col justify-center">
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-alana-primary/10 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                        <i data-lucide="external-link" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="text-white font-serif text-lg">4. Tráfico cruzado redes → sitio web</h3>
+                                </div>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-3">
+                                    Cada pieza social lleva a una página específica del sitio (producto, salida grupal,
+                                    bloqueo, formulario o landing para agencias), con llamados a la acción claros.
+                                </p>
+                                <p class="text-xs text-alana-gold uppercase tracking-wider font-semibold">
+                                    Resultado: redes funcionando como embudo directo de captación.
+                                </p>
+                            </div>
+
+                            <!-- Item 5 -->
+                            <div id="slide7-option5"
+                                class="group relative p-6 bg-card-gradient border border-white/5 hover:border-alana-gold/30 transition-all rounded-sm flex flex-col justify-center">
+                                <div class="flex items-center gap-4 mb-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-alana-primary/10 flex items-center justify-center text-alana-secondary group-hover:bg-alana-gold group-hover:text-alana-dark transition-colors">
+                                        <i data-lucide="layers" class="w-5 h-5"></i>
+                                    </div>
+                                    <h3 class="text-white font-serif text-lg">5. Autoridad, consistencia y alcance
+                                        orgánico</h3>
+                                </div>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-3">
+                                    Plantillas visuales unificadas, contenido educativo para agentes, optimización de
+                                    textos y
+                                    hashtags, uso de carruseles, reels informativos y destacados permanentes.
+                                </p>
+                                <p class="text-xs text-alana-gold uppercase tracking-wider font-semibold">
+                                    Resultado: aumento del alcance orgánico y refuerzo de Alana como proveedor experto.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: PLANES Y TARIFAS -->
+            <section class="slide" id="slide-pricing">
+                <div class="max-w-7xl w-full h-full flex flex-col justify-center">
+                    <!-- Encabezado del slide -->
+                    <div class="reveal-text d-1 mb-10 flex justify-between items-end border-b border-white/10 pb-6">
+                        <div>
+                            <span
+                                class="text-alana-gold uppercase tracking-widest text-xs font-bold mb-2 block">Inversión</span>
+                            <h2 class="text-4xl md:text-5xl font-serif text-white mb-2">Planes & Tarifas Mensuales</h2>
+                            <p class="text-gray-400 text-lg font-light">Flexibles, claros y diseñados para crecimiento
+                                B2B.</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <i data-lucide="credit-card" class="w-12 h-12 text-alana-primary/20"></i>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Pricing Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-text d-2">
+
+                        <!-- Card 1 (SEO) -->
+                        <div
+                            class="glass-panel p-8 rounded-sm hover:bg-white/5 transition-colors border border-white/5 flex flex-col relative group">
+                            <span class="text-xs text-alana-secondary uppercase tracking-widest mb-4 block">Estrategia
+                                Nº1</span>
+                            <h3 class="text-white font-serif text-2xl mb-4">SEO Inteligente</h3>
+                            <div class="mb-6">
+                                <span class="text-4xl font-bold text-white">USD 500</span>
+                                <span class="text-sm text-gray-500">/ mes</span>
+                            </div>
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Optimización técnica
+                                        continua.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Visibilidad en
+                                        búsquedas B2B clave.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Construcción de
+                                        autoridad digital.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Creación de hasta 3
+                                        contenidos web semanales (incluye promociones o artículos de blog).</span></li>
+
+                            </ul>
+                            <div class="pt-4 border-t border-white/10">
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ideal para visibilidad y
+                                    posicionamiento.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 (Contenido) -->
+                        <div
+                            class="glass-panel p-8 rounded-sm hover:bg-white/5 transition-colors border border-white/5 flex flex-col relative group">
+                            <span class="text-xs text-alana-secondary uppercase tracking-widest mb-4 block">Estrategia
+                                Nº2</span>
+                            <h3 class="text-white font-serif text-2xl mb-4">Contenido & Redes</h3>
+                            <div class="mb-6">
+                                <span class="text-4xl font-bold text-white">USD 500</span>
+                                <span class="text-sm text-gray-500">/ mes</span>
+                            </div>
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Contenido sincronizado
+                                        con el sitio web.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Publicaciones para
+                                        Instagram y Facebook con lenguaje B2B.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Calendario editorial
+                                        alineado a productos.</span></li>
+                                <li class="text-gray-400 text-sm flex gap-3 items-start"><i data-lucide="check"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Creación de hasta 3
+                                        contenidos semanales a partir de promociones en la web o acticulos del blog
+                                        (incluye diseño acorde a la marca).</span></li>
+                            </ul>
+                            <div class="pt-4 border-t border-white/10">
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Ideal para presencia y
+                                    comunicación.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 (Plan Completo) - Destacado -->
+                        <div
+                            class="glass-panel p-8 rounded-sm bg-gradient-to-br from-alana-panel to-alana-primary/10 border-2 border-alana-gold relative transform md:scale-105 shadow-2xl shadow-black/50 z-10 flex flex-col">
+                            <div
+                                class="absolute -top-3 left-1/2 -translate-x-1/2 bg-alana-gold text-alana-dark text-[10px] font-bold uppercase py-1 px-3 rounded-full tracking-widest">
+                                Plan Recomendado
+                            </div>
+                            <h3 class="text-white font-serif text-2xl mb-1 mt-2">Plan Completo</h3>
+                            <p class="text-alana-gold text-sm mb-4">SEO + Redes Sociales</p>
+                            <div class="mb-6">
+                                <span class="text-4xl font-bold text-white">USD 700</span>
+                                <span class="text-sm text-gray-500">/ mes</span>
+                                <p class="text-[10px] text-green-400 mt-1">Precio promocional por pack.</p>
+                            </div>
+                            <ul class="space-y-3 mb-8 flex-grow">
+                                <li class="text-gray-300 text-sm flex gap-3 items-start"><i data-lucide="check-circle"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Incluye Estrategia Nº1
+                                        (SEO Inteligente).</span></li>
+                                <li class="text-gray-300 text-sm flex gap-3 items-start"><i data-lucide="check-circle"
+                                        class="w-4 h-4 text-alana-gold mt-1 shrink-0"></i> <span>Incluye Estrategia Nº2
+                                        (Contenido & Redes).</span></li>
+                                <li class="text-alana-gold font-medium text-sm flex gap-3 items-start"><i
+                                        data-lucide="star" class="w-4 h-4 fill-alana-gold mt-1 shrink-0"></i>
+                                    <span>Incluye mantenimiento mensual del sitio web sin costo adicional.</span>
+                                </li>
+                            </ul>
+                            <div class="pt-4 border-t border-white/10">
+                                <p class="text-xs text-alana-secondary uppercase tracking-widest font-bold">Máximo
+                                    impacto con la menor inversión relativa.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Nota inferior de mercado -->
+                    <div class="mt-12 pt-6 border-t border-white/5 text-center px-4 reveal-text d-3">
+                        <p class="text-xs text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                            Planes equivalentes en el mercado latinoamericano se sitúan entre <span
+                                class="text-gray-200 font-bold">USD 1,500 y USD 2,500 mensuales</span>, y en el mercado
+                            estadounidense alcanzan fácilmente los <span class="text-gray-200 font-bold">USD 4,000
+                                mensuales</span>.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: CIERRE E IMPACTO (ROI) -->
+            <section class="slide" id="slide-4">
+                <div class="max-w-5xl w-full text-center relative z-10">
+                    <div class="reveal-text d-1 mb-6">
+                        <i data-lucide="trending-up" class="w-10 h-10 text-alana-gold mx-auto mb-4"></i>
+                        <h2 class="text-5xl md:text-7xl font-serif text-white">
+                            Impacto & <span class="text-alana-gold italic">Retorno.</span>
+                        </h2>
+                    </div>
+
+                    <div class="reveal-text d-2 max-w-2xl mx-auto mb-16">
+                        <p class="text-xl text-gray-300 font-light">
+                            Una sola agencia activa puede representar múltiples pasajeros al año.
+                            Los mayoristas que implementan esta estrategia recuperan la inversión:
+                        </p>
+                    </div>
+
+                    <div
+                        class="reveal-text d-3 flex justify-center items-center gap-16 mb-16 border-y border-white/10 py-10">
+                        <div class="text-center">
+                            <span class="block text-6xl font-serif text-white font-bold">3x <span
+                                    class="text-3xl text-gray-500 font-light">a</span> 10x</span>
+                            <span class="text-xs text-alana-secondary uppercase tracking-widest mt-2 block">Retorno de
+                                Inversión (ROI)</span>
+                        </div>
+                    </div>
+
+                    <div class="reveal-text d-4">
+                        <p class="text-gray-400 mb-8 max-w-lg mx-auto text-sm">
+                            Berion Company está preparada para acompañar esta transformación y llevar la marca Alana
+                            Tours al siguiente nivel.
+                        </p>
+                        <button
+                            class="group relative px-10 py-4 bg-transparent border border-alana-gold text-alana-gold overflow-hidden transition-all hover:text-alana-dark">
+                            <div
+                                class="absolute inset-0 w-0 bg-alana-gold transition-all duration-[350ms] ease-out group-hover:w-full">
+                            </div>
+                            <span class="relative uppercase tracking-widest text-sm font-bold flex items-center gap-3">
+                                Aprobar Propuesta <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Controles de Navegación -->
+    <div class="fixed bottom-0 left-0 w-full z-50 p-8 flex justify-between items-end pointer-events-none">
+
+        <!-- Paginación -->
+        <div class="flex gap-2 pointer-events-auto" id="pagination">
+            <!-- Inyectado via JS -->
+        </div>
+
+        <!-- Flechas y Controles de Audio -->
+        <div class="flex flex-col items-center gap-4 pointer-events-auto">
+            <!-- Audio Controls -->
+            <!-- Audio Controls -->
+            <div id="audio-wrapper" class="relative flex items-center justify-center mb-2">
+                <svg id="audio-progress" width="52" height="52"
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                    <circle cx="26" cy="26" r="23" stroke="#EEBF64" stroke-width="2" fill="none" stroke-linecap="round"
+                        transform="rotate(-90 26 26)" style="stroke-dasharray: 144.51; stroke-dashoffset: 144.51;" />
+                </svg>
+
+                <button id="audio-control" onclick="toggleAudio()"
+                    class="w-10 h-10 rounded-full border border-alana-gold/30 text-alana-gold hover:bg-alana-gold hover:text-alana-dark flex items-center justify-center transition-all bg-black/20 backdrop-blur-md relative z-10">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex gap-4">
+                <button onclick="changeSlide(-1)"
+                    class="w-12 h-12 border border-white/10 hover:border-alana-gold/50 rounded-full flex items-center justify-center text-white transition-colors hover:bg-white/5 backdrop-blur-sm group">
+                    <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
+                </button>
+                <button onclick="changeSlide(1)"
+                    class="w-12 h-12 border border-white/10 hover:border-alana-gold/50 rounded-full flex items-center justify-center text-white transition-colors hover:bg-white/5 backdrop-blur-sm group">
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de Progreso -->
+    <div class="fixed bottom-0 left-0 h-1 bg-white/10 w-full z-40">
+        <div id="progress-bar"
+            class="h-full bg-gradient-to-r from-alana-secondary to-alana-gold transition-all duration-700 ease-out w-0 shadow-[0_0_10px_rgba(238,191,100,0.5)]">
+        </div>
+    </div>
+
+    <script>
+        // Inicializar Iconos
+        lucide.createIcons();
+
+        // Estado Global
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const container = document.getElementById('deck-container');
+        const paginationContainer = document.getElementById('pagination');
+        const progressBar = document.getElementById('progress-bar');
+        const totalSlides = slides.length;
+
+        // Crear Paginación (Dots)
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = `w-12 h-1 bg-white/20 transition-all duration-300 hover:bg-white/40 ${index === 0 ? 'bg-alana-gold hover:bg-alana-gold' : ''}`;
+            dot.onclick = () => goToSlide(index);
+            paginationContainer.appendChild(dot);
+        });
+        const dots = paginationContainer.children;
+
+        // Lógica de Navegación
+        // (Functions moved to Audio Logic section below)
+
+        // Eventos de Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+        // Inicializar primera diapositiva y audio
+        setTimeout(() => {
+            goToSlide(0);
+            // No auto-play on load intentionally to respect user preference, 
+            // or we can if desired. User said: "reproducir automáticamente audio solo si el avance es hacia adelante"
+            // usually implies navigation, but for first load? Let's wait for user interaction or first nav.
+            // However, to ensure it works, we usually need user interaction first.
+        }, 100);
+
+        // Audio Logic
+
+        let currentAudio = null;
+        let isAudioPlaying = false;
+        let progressReqId = null;
+
+        // Pulse Animation Helpers
+        function pulseElement(selector) {
+            const el = document.querySelector(selector);
+            if (el) el.classList.add("card-pulse", "glow-pulse");
+        }
+
+        function pulseRemove(selector) {
+            const el = document.querySelector(selector);
+            if (el) el.classList.remove("card-pulse", "glow-pulse");
+        }
+
+        function pulseBars(selectors) {
+            selectors.forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) el.classList.add("glow-pulse");
+            });
+        }
+
+        function pulseBarsRemove(selectors) {
+            selectors.forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) el.classList.remove("glow-pulse");
+            });
+        }
+
+        // Spotlight Configuration
+        const slideCues = {
+            0: [ // Slide 1 (Index 0)
+                { time: 6, action: 'focus', selector: '#slide-0 h1' },
+                { time: 11, action: 'focus', selector: '#slide-0 .reveal-text.d-3' },
+                { time: 40, action: 'clear' }
+            ],
+            1: [
+                { time: 8, action: 'focus', selector: '#slide-1 .grid > div:nth-child(1)' },
+                { time: 16, action: 'focus', selector: '#slide-1 .grid > div:nth-child(2)' },
+                { time: 32, action: 'focus', selector: '#slide-1 .grid > div:nth-child(3)' },
+                { time: 40, action: 'clear' }
+            ],
+            2: [
+                { time: 8, action: "focus", selector: "#slide-2 .grid > div:nth-child(1)" }, // SEO Inteligente
+                { time: 17, action: "focus", selector: "#slide-2 .grid > div:nth-child(2)" }, // Promociones
+                { time: 26, action: "focus", selector: "#slide-2 .grid > div:nth-child(3)" }, // Contenido B2B
+                { time: 37, action: "focus", selector: "#slide-2 .grid > div:nth-child(4)" }, // IA Ready
+                { time: 49, action: "focus", selector: "#slide-2 .grid > div:nth-child(5)" }, // Inteligencia
+                { time: 56, action: "clear" }
+            ],
+            3: [
+                { time: 7, action: "focus", selector: "#slide-3 .reveal-text.d-2 .relative .relative:nth-child(1)" }, // Día 1–30
+                { time: 15, action: "focus", selector: "#slide-3 .reveal-text.d-2 .relative .relative:nth-child(2)" }, // Día 31–60
+                { time: 29, action: "focus", selector: "#slide-3 .reveal-text.d-2 .relative .relative:nth-child(3)" }, // Día 61–90+
+                { time: 46, action: "clear" } // Reset spotlight
+            ],
+            4: [
+                { time: 8, action: "pulse-bars", targets: ["#bar-mes4", "#bar-mes5"] },
+                { time: 15, action: "pulse-bars", targets: ["#bar-mes4", "#bar-mes5"] },
+
+                { time: 16, action: "pulse-card", target: "#roi-card" },
+                { time: 22, action: "remove-card", target: "#roi-card" },
+
+                { time: 23, action: "remove-bars", targets: ["#bar-mes4", "#bar-mes5"] }
+            ],
+            5: [
+                { time: 7, action: "focus", selector: "#seo-item-1" },
+                { time: 22, action: "focus", selector: "#seo-item-2" },
+                { time: 39, action: "focus", selector: "#seo-item-3" },
+                { time: 51, action: "focus", selector: "#seo-item-4" },
+                { time: 60, action: "focus", selector: "#seo-item-5" },
+                { time: 70, action: "clear" }
+            ],
+            6: [
+                { time: 9, action: "focus", selector: "#slide7-option1" },
+                { time: 24, action: "focus", selector: "#slide7-option2" },
+                { time: 32, action: "focus", selector: "#slide7-option3" },
+                { time: 41, action: "focus", selector: "#slide7-option4" },
+                { time: 50, action: "focus", selector: "#slide7-option5" },
+                { time: 57, action: "clear" }
+            ]
+        };
+        let triggeredCues = new Set();
+        let currentFocusedElement = null;
+
+        function startProgressTracking() {
+            const circle = document.querySelector('#audio-progress circle');
+            if (!circle || !currentAudio) return;
+
+            const radius = circle.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+
+            circle.style.strokeDasharray = `${circumference}`;
+
+            // Cancel any existing frame
+            if (progressReqId) cancelAnimationFrame(progressReqId);
+
+            const updateLoop = () => {
+                if (!currentAudio || currentAudio.paused || !currentAudio.duration) {
+                    progressReqId = requestAnimationFrame(updateLoop);
+                    return;
+                }
+
+                const currentTime = currentAudio.currentTime;
+                const progress = currentTime / currentAudio.duration;
+                const offset = circumference - progress * circumference;
+
+                circle.style.strokeDashoffset = offset;
+
+                // ---- SPOTLIGHT LOGIC ----
+                checkSpotlightCues(currentTime);
+
+                if (currentAudio.ended) {
+                    cancelAnimationFrame(progressReqId);
+                    // OnEnded handled in event listener
+                } else {
+                    progressReqId = requestAnimationFrame(updateLoop);
+                }
+            };
+
+            progressReqId = requestAnimationFrame(updateLoop);
+        }
+
+        function checkSpotlightCues(time) {
+            const cues = slideCues[currentSlide];
+            if (!cues) return;
+
+            cues.forEach((cue, index) => {
+                if (time >= cue.time && !triggeredCues.has(index)) {
+                    triggeredCues.add(index);
+
+                    if (cue.action === 'focus') {
+                        applySpotlight(cue.selector);
+                    } else if (cue.action === 'clear') {
+                        clearSpotlight();
+                    } else if (cue.action === "pulse-bars") {
+                        pulseBars(cue.targets);
+                    } else if (cue.action === "remove-bars") {
+                        pulseBarsRemove(cue.targets);
+                    } else if (cue.action === "pulse-card") {
+                        pulseElement(cue.target);
+                    } else if (cue.action === "remove-card") {
+                        pulseRemove(cue.target);
+                    }
+                }
+            });
+        }
+
+        function applySpotlight(selector) {
+            const target = document.querySelector(selector);
+            const overlay = document.getElementById('spotlight-overlay');
+            if (!target || !overlay) return;
+
+            const rect = target.getBoundingClientRect();
+            // Breathing room - adjusted as requested
+            // User asked for "Bordes ampliamente redondeados"
+            const padding = 20;
+
+            // Set position and size explicitly
+            overlay.style.top = `${rect.top - padding}px`;
+            overlay.style.left = `${rect.left - padding}px`;
+            overlay.style.width = `${rect.width + (padding * 2)}px`;
+            overlay.style.height = `${rect.height + (padding * 2)}px`;
+
+            // Remove clip-path as we are using box-shadow overlay
+            overlay.style.clipPath = 'none';
+            overlay.style.opacity = '1';
+
+            if (currentFocusedElement && currentFocusedElement !== target) {
+                currentFocusedElement.classList.remove('spotlight-zoomed');
+            }
+            target.classList.add('spotlight-zoomed');
+            currentFocusedElement = target;
+        }
+
+        function clearSpotlight() {
+            const overlay = document.getElementById('spotlight-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+            }
+            if (currentFocusedElement) {
+                currentFocusedElement.classList.remove('spotlight-zoomed');
+                currentFocusedElement = null;
+            }
+        }
+
+        function stopAllAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            isAudioPlaying = false;
+            if (progressReqId) cancelAnimationFrame(progressReqId);
+
+            // Reset Progress Circle
+            const circle = document.querySelector('#audio-progress circle');
+            if (circle) circle.style.strokeDashoffset = circle.style.strokeDasharray;
+
+            updateAudioUI(false);
+
+            // Clear Spotlight
+            clearSpotlight();
+            triggeredCues.clear();
+
+            // CLEAN ALL PULSES WHEN LEAVING SLIDE
+            document.querySelectorAll(".glow-pulse, .card-pulse")
+                .forEach(el => el.classList.remove("glow-pulse", "card-pulse"));
+        }
+
+        function playCurrentAudio() {
+            stopAllAudio(); // Stop and clear previous
+
+            // Dynamic Path: audios/slideX.mp3
+            // slide 1 (index 0) -> audios/slide1.mp3
+            const audioPath = `audios/slide${currentSlide + 1}.mp3`;
+
+            currentAudio = new Audio(audioPath);
+
+            currentAudio.play().then(() => {
+                isAudioPlaying = true;
+                updateAudioUI(true);
+                startProgressTracking();
+
+                currentAudio.onended = () => {
+                    isAudioPlaying = false;
+                    updateAudioUI(false);
+
+                    if (progressReqId) cancelAnimationFrame(progressReqId);
+
+                    const circle = document.querySelector('#audio-progress circle');
+                    if (circle) circle.style.strokeDashoffset = 0;
+
+                    clearSpotlight();
+
+                    // Esperamos 500ms y avanzamos automáticamente
+                    setTimeout(() => {
+                        // Solo avanzar si no se volvió a reproducir audio manualmente Y no es el último slide
+                        if (!isAudioPlaying && currentSlide < totalSlides - 1) {
+                            changeSlide(1);   // ← AVANZA AL SIGUIENTE SLIDE
+                        }
+                    }, 500);
+                };
+            }).catch(e => {
+                console.warn(`Audio play failed for ${audioPath}:`, e);
+                isAudioPlaying = false;
+                updateAudioUI(false);
+            });
+        }
+
+        function pauseCurrentAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                isAudioPlaying = false;
+                if (progressReqId) cancelAnimationFrame(progressReqId);
+                updateAudioUI(false);
+            }
+        }
+
+        function toggleAudio() {
+            if (isAudioPlaying) {
+                pauseCurrentAudio();
+            } else {
+                playCurrentAudio();
+            }
+        }
+
+        function updateAudioUI(playing) {
+            const btn = document.getElementById('audio-control');
+            btn.innerHTML = '';
+
+            if (playing) {
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', 'pause');
+                icon.classList.add('w-4', 'h-4', 'fill-current');
+                btn.appendChild(icon);
+                btn.classList.add('bg-alana-gold', 'text-alana-dark');
+            } else {
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', 'play');
+                icon.classList.add('w-4', 'h-4', 'fill-current');
+                btn.appendChild(icon);
+                btn.classList.remove('bg-alana-gold', 'text-alana-dark');
+            }
+            lucide.createIcons();
+        }
+
+        // Navigation Logic
+        function goToSlide(index, direction = 0) {
+            // Stop previous audio ALWAYS when changing slides
+            stopAllAudio();
+
+            // Reset mechanism handled by stopAllAudio, but for safety:
+            if (progressReqId) cancelAnimationFrame(progressReqId);
+
+            // Límites
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+
+            currentSlide = index;
+
+            // Transformación Horizontal
+            container.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Actualizar Clases (Dispara animaciones CSS)
+            slides.forEach((slide, i) => {
+                if (i === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // Actualizar Dots
+            Array.from(dots).forEach((dot, i) => {
+                if (i === currentSlide) {
+                    dot.classList.remove('bg-white/20');
+                    dot.classList.add('bg-alana-gold');
+                } else {
+                    dot.classList.add('bg-white/20');
+                    dot.classList.remove('bg-alana-gold');
+                }
+            });
+
+            // Actualizar Barra de Progreso
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // AUDIO LOGIC: Play only if moving forward (direction > 0)
+            if (direction > 0) {
+                // Add small delay to allow transition to start
+                setTimeout(() => {
+                    playCurrentAudio();
+                }, 800); // 0.8s matches CSS transition
+            }
+        }
+
+        function changeSlide(direction) {
+            // Pass direction to goToSlide
+            goToSlide(currentSlide + direction, direction);
+        }
+
+    </script>
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+
+            <div class="modal-slider" id="modal-slider">
+
+                <!-- Slide 1 -->
+                <div class="modal-slide">
+                    <div class="modal-slide-content space-y-6 text-center md:text-left">
+                        <span
+                            class="text-alana-gold uppercase tracking-widest text-xs font-bold border-b border-alana-gold/30 pb-1">Bienvenido</span>
+                        <h2 class="text-4xl font-serif text-white">Presentación guiada por audio</h2>
+                        <div class="space-y-4 text-gray-300 font-light text-sm md:text-base leading-relaxed">
+                            <p>Esta es una presentación dinámica narrada con audio.</p>
+                            <p>Le recomendamos usar audífonos para concentrarse y disfrutar mejor la experiencia.</p>
+                            <p>La presentación avanza slide por slide, como si fuera un pitch en vivo.</p>
+                        </div>
+                    </div>
+                    <div class="modal-slide-image">
+                        <img src="onboarding/imagen1.png" alt="Vista General">
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="modal-slide">
+                    <div class="modal-slide-content space-y-6 text-center md:text-left">
+                        <span
+                            class="text-alana-gold uppercase tracking-widest text-xs font-bold border-b border-alana-gold/30 pb-1">Navegación</span>
+                        <h2 class="text-3xl md:text-4xl font-serif text-white">Controles de reproducción</h2>
+                        <div class="space-y-4 text-gray-300 font-light text-sm md:text-base leading-relaxed">
+                            <p>El botón central controla el audio: Play / Pausa.</p>
+                            <p>Las flechas izquierda y derecha le permiten retroceder o avanzar entre slides.</p>
+                            <p>Usted mantiene siempre control total de la presentación. El progreso circular indica el
+                                tiempo restante del audio actual.</p>
+                        </div>
+                    </div>
+                    <div class="modal-slide-image">
+                        <img src="onboarding/imagen2.png" alt="Controles">
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="modal-slide">
+                    <div class="modal-slide-content space-y-6 text-center md:text-left">
+                        <span
+                            class="text-alana-gold uppercase tracking-widest text-xs font-bold border-b border-alana-gold/30 pb-1">Automático</span>
+                        <h2 class="text-3xl md:text-4xl font-serif text-white">Reproducción inteligente</h2>
+                        <div class="space-y-4 text-gray-300 font-light text-sm md:text-base leading-relaxed">
+                            <p>Cada slide tiene un audio propio.</p>
+                            <p>Cuando termina el audio de un slide, la presentación avanza automáticamente al siguiente.
+                            </p>
+                            <p>Si retrocede manualmente, el audio no se activará solo; podrá iniciarlo con Play.</p>
+                        </div>
+                        <div class="pt-4 flex justify-center md:justify-start">
+                            <button id="close-modal-btn" class="btn-gold">
+                                Entendido, Comenzar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-slide-image">
+                        <img src="onboarding/imagen3.png" alt="Autoplay">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controls -->
+            <div class="modal-controls">
+                <button class="modal-nav-btn" id="modal-prev">
+                    <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                </button>
+                <div class="modal-dots" id="modal-dots">
+                    <!-- Dots generated by JS -->
+                </div>
+                <button class="modal-nav-btn" id="modal-next">
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('onboarding-modal');
+            const slider = document.getElementById('modal-slider');
+            const btnClose = document.getElementById('close-modal-btn');
+            const btnPrev = document.getElementById('modal-prev');
+            const btnNext = document.getElementById('modal-next');
+            const dotsContainer = document.getElementById('modal-dots');
+
+            const slides = document.querySelectorAll('.modal-slide');
+            const totalOnboardingSlides = slides.length;
+            let currentOnboardingSlide = 0;
+
+            // 1. Always Show Modal (Gatekeeper Logic)
+            // No persistence checks. Always block experience initially.
+            setTimeout(() => {
+                modal.classList.add('visible');
+                // Initialize Icons inside modal that might not be rendered yet if Lucide runs too early
+                lucide.createIcons();
+            }, 500);
+
+            // 2. Setup Dots
+            for (let i = 0; i < totalOnboardingSlides; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('modal-dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToOnboardingSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+
+            // 3. Navigation Functions
+            function updateSlider() {
+                const translateX = -(currentOnboardingSlide * 100);
+                slider.style.transform = `translateX(${translateX}%)`;
+
+                // Update dots
+                const dots = document.querySelectorAll('.modal-dot');
+                dots.forEach((dot, index) => {
+                    if (index === currentOnboardingSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+
+                // Handle Buttons visibility
+                btnPrev.style.opacity = currentOnboardingSlide === 0 ? '0' : '1';
+                btnPrev.style.pointerEvents = currentOnboardingSlide === 0 ? 'none' : 'auto';
+
+                btnNext.style.opacity = currentOnboardingSlide === totalOnboardingSlides - 1 ? '0' : '1';
+                btnNext.style.pointerEvents = currentOnboardingSlide === totalOnboardingSlides - 1 ? 'none' : 'auto';
+            }
+
+            function goToOnboardingSlide(index) {
+                if (index < 0 || index >= totalOnboardingSlides) return;
+                currentOnboardingSlide = index;
+                updateSlider();
+            }
+
+            btnPrev.addEventListener('click', () => {
+                goToOnboardingSlide(currentOnboardingSlide - 1);
+            });
+
+            btnNext.addEventListener('click', () => {
+                goToOnboardingSlide(currentOnboardingSlide + 1);
+            });
+
+            // 4. Close Modal
+            btnClose.addEventListener('click', () => {
+                modal.classList.remove('visible');
+                // REMOVED: sessionStorage.setItem('alanaOnboardingSeen', '1');
+
+                // Start Audio
+                // Check if playCurrentAudio is available in global scope
+                if (typeof window.playCurrentAudio === 'function') {
+                    window.playCurrentAudio();
+                } else if (typeof playCurrentAudio === 'function') {
+                    // It might be defined in the main script block
+                    playCurrentAudio();
+                } else {
+                    console.warn('playCurrentAudio function not found');
+                }
+
+                // Remove from DOM after transition (optional, but keeping it visible class based allows re-showing if needed, though here we just hide it)
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 500);
+            });
+
+            // Initialize state
+            updateSlider();
+        });
+    </script>
+</body>
+
+</html>
